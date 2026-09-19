@@ -205,14 +205,15 @@ RTA: PUT reemplaza el ticket completo. En el experimento, el ticket 3 queda solo
 RTA: Sale del ticket que ya está en el arreglo tickets, que se busca por id al guardar. Si no lo incluyeras, el PUT reemplazaría el ticket sin estado. El ticket perdería su estado y la tarjeta ya no se podría pintar bien.
 
 3. Anota el código de estado que viste en Network al crear, al cambiar el estado, al editar, al eliminar y al pedir `/tickets/999`. ¿A qué familia pertenece cada uno y qué significa?
-RTA:
-| Operación | Código | Familia | Significado |
-|---|---|---|---|
-| Crear (POST) | 201 | 2xx, éxito | Se creó el recurso |
-| Cambiar estado (PATCH) | 200 | 2xx, éxito | La operación salió bien |
-| Editar (PUT) | 200 | 2xx, éxito | La operación salió bien |
-| Eliminar (DELETE) | 200 | 2xx, éxito | La operación salió bien (algunos servidores responden 204, sin contenido) |
-| Pedir `/tickets/999` (GET) | 404 | 4xx, error del cliente | El recurso pedido no existe |
+  RTA:
+
+   | Operación | Código | Familia | Significado |
+   |---|---|---|---|
+   | Crear (POST) | 201 | 2xx, éxito | Se creó el recurso |
+   | Cambiar estado (PATCH) | 200 | 2xx, éxito | La operación salió bien |
+   | Editar (PUT) | 200 | 2xx, éxito | La operación salió bien |
+   | Eliminar (DELETE) | 200 | 2xx, éxito | La operación salió bien (algunos servidores responden 204, sin contenido) |
+   | Pedir `/tickets/999` (GET) | 404 | 4xx, error del cliente | El recurso pedido no existe |
 
 4. Una operación es idempotente cuando hacerla varias veces deja el servidor igual que hacerla una sola vez. Corre `npm run api:lento`, llena el formulario y haz doble clic rápido en "Crear ticket". ¿Cuántos tickets se crearon? ¿Pasaría lo mismo si enviaras dos veces el mismo PUT? ¿Cómo evitas el problema desde la interfaz?
 RTA: Se crean dos tickets iguales, con id distintos. Con api:lento el primer POST no ha respondido y el formulario sigue lleno, así que el segundo clic envía los mismos datos. Dos PUT idénticos no causan el problema: el ticket queda igual que con uno solo, porque PUT es idempotente y POST no. Desde la interfaz se evita deshabilitando el botón de envío mientras la petición está en curso y volviéndolo a habilitar cuando termina. 
