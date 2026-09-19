@@ -199,13 +199,35 @@ Cada tarjeta tiene un botón "Eliminar" que pide confirmación con `confirm`. Si
 Respóndelas por escrito y con tus palabras. Son del tipo que puede salir en la parte teórica del previo.
 
 1. Según lo que viste en el experimento, ¿qué diferencia hay entre PUT y PATCH? ¿Por qué el nivel 3 usa PATCH y el nivel 4 usa PUT?
+RTA: PUT reemplaza el ticket completo. En el experimento, el ticket 3 queda solo con id y titulo, y pierde todos los demás campos. PATCH cambia solo los campos que envías y deja el resto igual. El nivel 3 usa PATCH porque cambia un único campo (estado). El nivel 4 usa PUT porque el formulario envía el ticket entero.
+
 2. El formulario del nivel 4 no tiene un campo de estado. ¿De dónde sale el estado que envías en el PUT, y qué le pasaría al ticket si no lo incluyeras?
+RTA: Sale del ticket que ya está en el arreglo tickets, que se busca por id al guardar. Si no lo incluyeras, el PUT reemplazaría el ticket sin estado. El ticket perdería su estado y la tarjeta ya no se podría pintar bien.
+
 3. Anota el código de estado que viste en Network al crear, al cambiar el estado, al editar, al eliminar y al pedir `/tickets/999`. ¿A qué familia pertenece cada uno y qué significa?
+RTA:
+| Operación | Código | Familia | Significado |
+|---|---|---|---|
+| Crear (POST) | 201 | 2xx, éxito | Se creó el recurso |
+| Cambiar estado (PATCH) | 200 | 2xx, éxito | La operación salió bien |
+| Editar (PUT) | 200 | 2xx, éxito | La operación salió bien |
+| Eliminar (DELETE) | 200 | 2xx, éxito | La operación salió bien (algunos servidores responden 204, sin contenido) |
+| Pedir `/tickets/999` (GET) | 404 | 4xx, error del cliente | El recurso pedido no existe |
+
 4. Una operación es idempotente cuando hacerla varias veces deja el servidor igual que hacerla una sola vez. Corre `npm run api:lento`, llena el formulario y haz doble clic rápido en "Crear ticket". ¿Cuántos tickets se crearon? ¿Pasaría lo mismo si enviaras dos veces el mismo PUT? ¿Cómo evitas el problema desde la interfaz?
+RTA: Se crean dos tickets iguales, con id distintos. Con api:lento el primer POST no ha respondido y el formulario sigue lleno, así que el segundo clic envía los mismos datos. Dos PUT idénticos no causan el problema: el ticket queda igual que con uno solo, porque PUT es idempotente y POST no. Desde la interfaz se evita deshabilitando el botón de envío mientras la petición está en curso y volviéndolo a habilitar cuando termina. 
+
 5. Para `fetch`, ¿qué diferencia hay entre que el servidor esté apagado y que responda 404? ¿En cuál de los dos casos llega tu código al `catch` sin que tú hagas nada?
+RTA: Con el servidor apagado no hay respuesta: fetch rechaza la promesa y el código llega al catch solo. Con un 404 el servidor sí respondió, así que la promesa se resuelve normalmente y respuesta.ok es false. Ahí se tiene que revisar respuesta.ok y lanzar el error. Solo el servidor apagado llega al catch sin que se haga nada.
+
 6. ¿Por qué la búsqueda del nivel 6 no necesita hacer peticiones a la API? ¿En qué situación sí convendría que el servidor hiciera el filtro?
+RTA: Porque todos los tickets ya están en el arreglo tickets del navegador, y filter con includes los recorre ahí mismo. Convendría que se filtrara el servidor cuando hubiera tantos datos que no se puedan descargar todos (miles de tickets, con paginación), o cuando no debas enviar todos los datos al navegador.
+
 7. En `package.json`, ¿para qué sirve la sección `scripts`? ¿Qué pasa en tu disco cuando corres `npm install`, y por qué `node_modules` está en `.gitignore`?
+RTA: scripts define comandos con nombre, como api, api:lento y reiniciar, que se ejecutan con npm run nombre. Así no se tiene que escribir el comando largo. npm install lee las dependencias de package.json, descarga json-server y todo lo que necesita en la carpeta node_modules del disco, y crea o actualiza package-lock.json. node_modules va en .gitignore porque tiene miles de archivos y pesa mucho, y cualquiera puede recrearla con npm install a partir de package.json.
+
 8. Toma una clase con prefijo de tu propio proyecto (por ejemplo `md:grid-cols-2`) y explica qué ve alguien que abre la página en un celular y qué ve alguien en un computador.
+RTA: En un celular (menos de 768 px) la clase no aplica: las tarjetas van en una sola columna, una debajo de otra. Desde 768 px (md), como en una tablet o un computador, aplica y las tarjetas se ponen en dos columnas, lado a lado. Las clases sin prefijo valen para todos los tamaños, y las que llevan md: las sobrescriben desde ese ancho en adelante.
 
 ## Para que te sirva de preparación
 
@@ -215,4 +237,3 @@ Respóndelas por escrito y con tus palabras. Son del tipo que puede salir en la 
 - Si ya sabes usar Git, haz un commit cada vez que termines un nivel.
 - Si tus datos quedan muy revueltos, `npm run reiniciar` y listo.
 
-Profesor
